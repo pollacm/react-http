@@ -5,3 +5,5 @@ Typically use a third party js library for handling http requests
 	https://github.com/axios/axios
 	Not something strongly connected to react, it can be installed with any js code
 	npm install --save axios
+HTTP Get request
+	Use componentDidMount for fetching calls
