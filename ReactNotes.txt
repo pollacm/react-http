@@ -1,0 +1,5 @@
+Site for testing out API calls and requests w/ dummy data
+	jsonplaceholder.typicode.com
+Typically use a third party js library for handling http requests
+	axios can be used for this
+	https://github.com/axios/axios
