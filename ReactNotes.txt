@@ -40,3 +40,59 @@ Transforming data
         .then(response => {
             console.log(response);
         })
+Interceptors
+	global listeners with axios
+	usually add these near the top level of your application. For the example we add in index.js
+	always need to RETURN the request/response configuration, otherwise it will never get returned to the rest of the app
+	To register a new interceptor
+		for request
+			axios.interceptors.request.use(request => {
+				console.log(request);
+				//Edit request config
+				return request;
+			}, error => {
+				console.log(error);
+				return Promise.reject('ERROR: ' + error);
+			});
+		for response
+			axios.interceptors.response.use(response => {
+				console.log(response);
+				//Edit response config
+				return response;
+			}, error => {
+				console.log(error);
+				return Promise.reject('ERROR: ' + error);
+			})
+	Common use is to add an authorization header or something like that
+	To remove an interceptor
+		var myInterceptor = axios.interceptors.request.use(function () {/*...*/});
+		axios.interceptors.request.eject(myInterceptor);
+Setting default configuration for axios
+	If we wanted to turn axios.get('http://jsonplaceholder.typicode.com/posts') to axios.get('/posts'), we could accomplish this
+	Also do this near or at the top level of your application
+	Do this by accessing axios.defaults
+		axios.defaults.baseURL = 'https://jsonplaceholder.typicode.com';
+		Other things that can be set globally
+			axios.defaults.headers.common['Authorization'] = 'AUTH TOKEN';
+
+			//can only add data to specific request types 
+			axios.defaults.headers.post['Content-Type'] = 'application/json';
+Creating and using Axios instances
+	What if you wanted to use one baseURL for certain parts of your application and a different one for other parts?
+	You use axios instances for this
+	The instance will assume the default setup initially created, but override anything overriden in the new instance
+		Create in a few file
+			import axios from 'axios';
+
+			//creates an instance of axios, a copy of the axios object
+			const instance = axios.create({
+				baseURL: 'https://jsonplaceholder.typicode.com'
+			});
+
+			//overriding other pieces
+			instance.defaults.headers.common['Authorization'] = 'AUTH TOKEN FROM INSTANCE';
+
+			export default instance;
+		then import it from your components
+			import axios from '../../axios';
+		Interceptors set globally will no longer work though since we are using the instance
