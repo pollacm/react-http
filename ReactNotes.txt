@@ -5,5 +5,38 @@ Typically use a third party js library for handling http requests
 	https://github.com/axios/axios
 	Not something strongly connected to react, it can be installed with any js code
 	npm install --save axios
+	In your component
+		import axios from 'axios';
+	In componentDidMount
+		axios.get('{http address}')
+	Uses promises
+		axios.get('http://jsonplaceholder.typicode.com/posts')
+        .then(response => {
+
+        });
 HTTP Get request
 	Use componentDidMount for fetching calls
+Transforming data
+	when you fetch too much data, transform it after you get it
+		const posts = response.data.slice(0, 4)
+	posting
+		const post = {
+            title: this.state.title,
+            body: this.state.content,
+            author: this.state.author
+        }
+
+        axios.post("http://jsonplaceholder.typicode.com/posts", post)
+        .then(response => {
+            console.log(response);
+        });
+		
+		axios will turn the "post" object into json data for us automatically
+		
+		status 201 shows that it was successful
+		
+	deleting
+		axios.delete("http://jsonplaceholder.typicode.com/posts/" + this.state.selectedPostId)
+        .then(response => {
+            console.log(response);
+        })

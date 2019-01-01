@@ -9,12 +9,14 @@ import './Blog.css';
 class Blog extends Component {
     state = {
         posts: [],
-        selectedPostId: null
+        selectedPostId: null,
+        error: false
     }
 
     componentDidMount() {
         axios.get('http://jsonplaceholder.typicode.com/posts')
         .then(response => {
+            console.log(response);
             const posts = response.data.slice(0, 4);
             const updatedPosts = posts.map(post => {
                 return {
@@ -26,6 +28,12 @@ class Blog extends Component {
                 posts: updatedPosts,
                 //selectedPostId: updatedPosts[0].id
             })
+        })
+        .catch(error => {
+            console.log(error);
+            this.setState({
+                error: true
+            });
         });
     }
 
@@ -35,20 +43,33 @@ class Blog extends Component {
         });
     }
 
+    deleteSelectionHandler = () => {
+        axios.delete("http://jsonplaceholder.typicode.com/posts/" + this.state.selectedPostId)
+        .then(response => {
+            console.log(response);
+        })
+    }
+
     render () {
+        let posts = <p style={{textAlign: 'center'}}>Something went wrong</p> 
+        if(!this.state.error) {
+            posts = this.state.posts.map(post => {
+                return <Post 
+                        key={post.id} 
+                        title={post.title} 
+                        author={post.author} 
+                        click={() => this.postSelectedHandler(post.id)}/>
+            });
+        }
         return (
             <div>
-                <section className="Posts">
-                    {this.state.posts.map(post => {
-                        return <Post 
-                                key={post.id} 
-                                title={post.title} 
-                                author={post.author} 
-                                click={() => this.postSelectedHandler(post.id)}/>
-                    })}                    
+                <section className="Posts">                    
+                    {posts}                  
                 </section>
                 <section>
-                    <FullPost id={this.state.selectedPostId}/>
+                    <FullPost 
+                        id={this.state.selectedPostId}
+                        click={() => this.deleteSelectionHandler()}/>
                 </section>
                 <section>
                     <NewPost />
